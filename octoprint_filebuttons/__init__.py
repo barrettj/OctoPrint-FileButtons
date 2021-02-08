@@ -18,7 +18,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
     def button_callback(self, channel):
     	self._logger.info("FileButtons button callback channel {}".format(channel))
-    	self._printer.commands("M117 FileButtons channel {0}".format(channel))
+    	self._printer.commands("M117 FileButtons - {0}".format(channel))
 
 
     def setup_GPIO(self):
