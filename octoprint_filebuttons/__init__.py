@@ -6,7 +6,7 @@ import RPi.GPIO as GPIO
 import os
 
 class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
-					  octoprint.plugin.ShutdownPlugin.
+					  octoprint.plugin.ShutdownPlugin,
                       octoprint.plugin.RestartNeedingPlugin):
 
     def on_after_startup(self):
