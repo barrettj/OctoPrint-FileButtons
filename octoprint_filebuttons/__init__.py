@@ -33,7 +33,6 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
     def setup_GPIO_pin(self, channel):
         try:
             if channel != -1:
-            	global bouncetime_button
                 GPIO.setup(channel, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
                 GPIO.add_event_detect(channel, GPIO.RISING, callback=self.button_callback, bouncetime = 250)
                 self._logger.info("New Event Detect has been added to GPIO # %s", channel)
