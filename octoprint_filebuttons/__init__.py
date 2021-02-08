@@ -8,7 +8,8 @@ import os
 bouncetime_button = 250
 
 class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
-					  octoprint.plugin.ShutdownPlugin):
+					  octoprint.plugin.ShutdownPlugin.
+                      octoprint.plugin.RestartNeedingPlugin):
 
     def on_after_startup(self):
         self._logger.info("FileButtons %s on_after_startup!", self._plugin_version)
@@ -61,7 +62,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 		)
 
 __plugin_pythoncompat__ = ">=2.7,<4"
-__plugin_name__ = "File Check"
+__plugin_name__ = "File Buttons"
 
 
 def __plugin_load__():
