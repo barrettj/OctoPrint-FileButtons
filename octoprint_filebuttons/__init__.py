@@ -26,16 +26,16 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         GPIO.setmode(GPIO.BOARD)
 
 
-    def setup_GPIO_pin(self, channel):
-        try:
-            if channel != -1:
-            	global bouncetime_button
-                GPIO.setup(channel, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-                GPIO.add_event_detect(channel, GPIO.RISING, callback=self.button_callback, bouncetime = bouncetime_button)
-                self._logger.info("New Event Detect has been added to GPIO # %s", channel)
+    # def setup_GPIO_pin(self, channel):
+    #     try:
+    #         if channel != -1:
+    #         	global bouncetime_button
+    #             GPIO.setup(channel, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    #             GPIO.add_event_detect(channel, GPIO.RISING, callback=self.button_callback, bouncetime = bouncetime_button)
+    #             self._logger.info("New Event Detect has been added to GPIO # %s", channel)
 
-        except:
-            self._logger.exception("Cannot setup GPIO ports %s, check to makes sure you don't have the same ports assigned to multiple actions", str(channel))
+    #     except:
+    #         self._logger.exception("Cannot setup GPIO ports %s, check to makes sure you don't have the same ports assigned to multiple actions", str(channel))
 
 
     def on_shutdown(self):
