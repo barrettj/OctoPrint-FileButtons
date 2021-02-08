@@ -19,23 +19,26 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
     def button_callback(self, channel):
     	self._logger.info("FileButtons button callback channel {}".format(channel))
+    	self._printer.commands("M117 FileButtons channel {0}".format(channel))
 
 
     def setup_GPIO(self):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
+        setup_GPIO_pin(36)
+        setup_GPIO_pin(38)
+        setup_GPIO_pin(40)
 
 
-    # def setup_GPIO_pin(self, channel):
-    #     try:
-    #         if channel != -1:
-    #         	global bouncetime_button
-    #             GPIO.setup(channel, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-    #             GPIO.add_event_detect(channel, GPIO.RISING, callback=self.button_callback, bouncetime = bouncetime_button)
-    #             self._logger.info("New Event Detect has been added to GPIO # %s", channel)
-
-    #     except:
-    #         self._logger.exception("Cannot setup GPIO ports %s, check to makes sure you don't have the same ports assigned to multiple actions", str(channel))
+    def setup_GPIO_pin(self, channel):
+        try:
+            if channel != -1:
+            	global bouncetime_button
+                GPIO.setup(channel, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+                GPIO.add_event_detect(channel, GPIO.RISING, callback=self.button_callback, bouncetime = bouncetime_button)
+                self._logger.info("New Event Detect has been added to GPIO # %s", channel)
+        except:
+            self._logger.exception("Cannot setup GPIO ports %s, check to makes sure you don't have the same ports assigned to multiple actions", str(channel))
 
 
     def on_shutdown(self):
