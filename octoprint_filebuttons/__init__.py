@@ -61,6 +61,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 		)
 
 __plugin_pythoncompat__ = ">=2.7,<4"
+__plugin_name__ = "File Check"
 
 
 def __plugin_load__():
