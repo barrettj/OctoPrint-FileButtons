@@ -5,8 +5,6 @@ import octoprint.plugin
 import RPi.GPIO as GPIO
 import os
 
-bouncetime_button = 250
-
 class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 					  octoprint.plugin.ShutdownPlugin.
                       octoprint.plugin.RestartNeedingPlugin):
@@ -37,7 +35,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
             if channel != -1:
             	global bouncetime_button
                 GPIO.setup(channel, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-                GPIO.add_event_detect(channel, GPIO.RISING, callback=self.button_callback, bouncetime = bouncetime_button)
+                GPIO.add_event_detect(channel, GPIO.RISING, callback=self.button_callback, bouncetime = 250)
                 self._logger.info("New Event Detect has been added to GPIO # %s", channel)
         except:
             self._logger.exception("Cannot setup GPIO ports %s, check to makes sure you don't have the same ports assigned to multiple actions", str(channel))
