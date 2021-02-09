@@ -85,11 +85,13 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
             self._printer.commands("M117 {} Unknown Button".format(self.eventNumber))
             self.set_next_event_timer_short()
 
-    def start_current_job():
+    def start_current_job(self):
         self._printer.commands("M117 Would Start Job")
         self.set_next_event_timer_long()
 
     def load_next_file_in_current_folder(self):
+        self._printer.commands("M117 load next")
+
         jobData = self._printer.get_current_job()
 
         # we have a job - save some information about the current file
@@ -132,6 +134,8 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         self.set_next_event_timer_short()
 
     def load_previous_file_in_current_folder(self):
+        self._printer.commands("M117 load prev")
+
         jobData = self._printer.get_current_job()
 
         # we have a job - save some information about the current file
