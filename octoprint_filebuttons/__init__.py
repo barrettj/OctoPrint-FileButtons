@@ -17,6 +17,8 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
         self.nextEventCanHappenAt = time.time()
 
+        self.eventNumber = 0
+
     def on_after_startup(self):
         self._logger.info("FileButtons %s on_after_startup!", self._plugin_version)
         self._logger.info(self._printer.get_state_id())
@@ -37,42 +39,44 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
         if channel == self.centerChannel:
             if GPIO.input(self.leftChannel):
-                self._printer.commands("M117 Center While Left")
+                self._printer.commands("M117 {} Center While Left".format(self.eventNumber))
             elif GPIO.input(self.rightChannel):
-                self._printer.commands("M117 Center While Right")
+                self._printer.commands("M117 {} Center While Right".format(self.eventNumber))
             else:
-                self._printer.commands("M117 Center Button")
+                self._printer.commands("M117 {} Center Button".format(self.eventNumber))
 
             # all center button commands have a long debounce
             self.set_next_event_timer_long()
 
         elif channel == self.leftChannel:
             if  GPIO.input(self.rightChannel):
-                self._printer.commands("M117 Left While Right")
+                self._printer.commands("M117 {} Left While Right".format(self.eventNumber))
                 self.set_next_event_timer_long()
 
             else:
-                self._printer.commands("M117 Left Button")
+                self._printer.commands("M117 {} Left Button".format(self.eventNumber))
                 self.set_next_event_timer_short()
 
         elif channel == self.rightChannel:
             if GPIO.input(self.leftChannel):
-                self._printer.commands("M117 Right While Left")
+                self._printer.commands("M117 {} Right While Left".format(self.eventNumber))
                 self.set_next_event_timer_long()
 
             else:
-                self._printer.commands("M117 Right Button")
+                self._printer.commands("M117 {} Right Button".format(self.eventNumber))
                 self.set_next_event_timer_short()
 
         else:
-            self._printer.commands("M117 Unknown Button")
+            self._printer.commands("M117 {} Unknown Button".format(self.eventNumber))
             self.set_next_event_timer_short()
 
     def set_next_event_timer_short(self):
         self.nextEventCanHappenAt = time.time() + 0.1
+        self.eventNumber = self.eventNumber + 1
 
     def set_next_event_timer_long(self):
         self.nextEventCanHappenAt = time.time() + 1.0
+        self.eventNumber = self.eventNumber + 1
 
     def setup_GPIO(self):
         GPIO.setwarnings(False)
