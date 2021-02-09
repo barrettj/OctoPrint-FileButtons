@@ -207,10 +207,10 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
     def select_current_folder(self):
         if self.currentFolderSelection == -1:
-            self._printer.commands("M117 -Root Folder")
+            self.load_first_file_of_folder()
         else:
             folder = self.folder_list()[self.currentFolderSelection]
-            self._printer.commands("M117 -{}".format(folder))
+            self.load_first_file_of_folder(folder)
         self.set_next_event_timer_short()
 
     def folder_list(self):
