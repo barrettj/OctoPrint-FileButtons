@@ -186,13 +186,13 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
     def show_next_folder_selection(self):
         self.currentFolderSelection = self.currentFolderSelection + 1
         if self.currentFolderSelection >= len(self.folder_list()):
-            self.currentFolderSelection == -1
+            self.currentFolderSelection = -1
         self.update_folder_selection_display()
 
     def show_previous_folder_selection(self):
         self.currentFolderSelection = self.currentFolderSelection - 1
         if self.currentFolderSelection <= -2:
-            self.currentFolderSelection == len(self.folder_list()) - 1
+            self.currentFolderSelection = len(self.folder_list()) - 1
         self.update_folder_selection_display()
 
     def update_folder_selection_display(self):
