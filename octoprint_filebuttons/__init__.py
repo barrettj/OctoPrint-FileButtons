@@ -9,7 +9,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 					  octoprint.plugin.ShutdownPlugin,
                       octoprint.plugin.RestartNeedingPlugin):
 
-   def __init__(self):
+    def __init__(self):
         self.leftChannel = 40
         self.centerChannel = 38
         self.rightChannel = 36
