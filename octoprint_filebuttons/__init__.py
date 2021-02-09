@@ -90,8 +90,6 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         self.set_next_event_timer_long()
 
     def load_next_file_in_current_folder(self):
-        self._printer.commands("M117 load next")
-
         jobData = self._printer.get_current_job()
 
         # we have a job - save some information about the current file
@@ -121,7 +119,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
             nextIndex = 0
 
         # store the info for the next file
-        nextFileInfo = folderFiles[sortedFiles[nextIndex]]
+        nextFileInfo = filesOnly[sortedFiles[nextIndex]]
         nextASCIIName = nextFileInfo["name"]
         nextPath = nextFileInfo["path"]
 
@@ -134,8 +132,6 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         self.set_next_event_timer_short()
 
     def load_previous_file_in_current_folder(self):
-        self._printer.commands("M117 load prev")
-
         jobData = self._printer.get_current_job()
 
         # we have a job - save some information about the current file
@@ -165,7 +161,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
             nextIndex = len(sortedFiles)
 
         # store the info for the next file
-        nextFileInfo = folderFiles[sortedFiles[nextIndex]]
+        nextFileInfo = filesOnly[sortedFiles[nextIndex]]
         nextASCIIName = nextFileInfo["name"]
         nextPath = nextFileInfo["path"]
 
