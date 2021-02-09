@@ -183,6 +183,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         self.set_next_event_timer_short()
 
     def reset_folder_selection(self):
+        self._printer.unselect_file()
         self.currentFolderSelection = -2
         self.display_select_folder_message()
         self.set_next_event_timer_long()
