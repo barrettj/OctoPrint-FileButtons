@@ -183,14 +183,14 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
     def show_next_folder_selection(self):
         self.currentFolderSelection = self.currentFolderSelection + 1
-        if self.currentFolderSelection == len(self.folder_list):
+        if self.currentFolderSelection == len(self.folder_list()):
             self.currentFolderSelection == -1
         self.update_folder_selection_display()
 
     def show_previous_folder_selection(self):
         self.currentFolderSelection = self.currentFolderSelection - 1
-        if self.currentFolderSelection == -2:
-            self.currentFolderSelection == len(self.folder_list)
+        if self.currentFolderSelection <= -2:
+            self.currentFolderSelection == len(self.folder_list())
         self.update_folder_selection_display()
 
     def update_folder_selection_display(self):
@@ -210,11 +210,11 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         self.set_next_event_timer_short()
 
     def folder_list(self):
-        foldersFilesAndFolders = self._file_manager.list_files(path="", recursive=False)["local"]
+        filesAndFolders = self._file_manager.list_files(path="", recursive=False)["local"]
 
         # filter the list to have just the folders
         foldersOnly = {}
-        for key, node in foldersFilesAndFolders.items():
+        for key, node in filesAndFolders.items():
             if node["type"] == "folder":
                 foldersOnly[key] = node
 
