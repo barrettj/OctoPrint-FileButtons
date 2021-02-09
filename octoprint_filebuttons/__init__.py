@@ -56,11 +56,9 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
                 if hasJob:
                     self.start_current_job()
                 else:
-                    self._printer.commands("M117 center 1")
                     if self.currentFolderSelection == -2:
                         self.display_select_folder_message()
                     else:
-                        self._printer.commands("M117 center 2")
                         self.select_current_folder()
             
         elif channel == self.leftChannel:
@@ -157,7 +155,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         # sort the files in the desired manner
         sortedFiles = sorted(filesOnly.keys())
 
-        # figure out the index of the next file (looping)
+        # figure out the index of the previous file (looping)
         currentIndexIntoSorted = sortedFiles.index(currentName)
         nextIndex = currentIndexIntoSorted - 1
         if nextIndex == -1:
