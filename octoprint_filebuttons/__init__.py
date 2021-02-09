@@ -9,10 +9,10 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 					  octoprint.plugin.ShutdownPlugin,
                       octoprint.plugin.RestartNeedingPlugin):
 
-    
-    leftChannel = 40
-    centerChannel = 38
-    rightChannel = 36
+   def __init__(self):
+        self.leftChannel = 40
+        self.centerChannel = 38
+        self.rightChannel = 36
 
     def on_after_startup(self):
         self._logger.info("FileButtons %s on_after_startup!", self._plugin_version)
@@ -29,19 +29,19 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
             return
 
         if channel == centerChannel:
-            if GPIO.input(leftChannel):
+            if GPIO.input(self.leftChannel):
                 self._printer.commands("M117 Center While Left")
-            elif GPIO.input(rightChannel):
+            elif GPIO.input(self.rightChannel):
                 self._printer.commands("M117 Center While Right")
             else:
                 self._printer.commands("M117 Center Button")
         elif channel == leftChannel:
-            if  GPIO.input(rightChannel):
+            if  GPIO.input(self.rightChannel):
                 self._printer.commands("M117 Left While Right")
             else:
                 self._printer.commands("M117 Left Button")
         elif channel == rightChannel:
-            if GPIO.input(leftChannel):
+            if GPIO.input(self.leftChannel):
                 self._printer.commands("M117 Right While Left")
             else:
                 self._printer.commands("M117 Right Button")
