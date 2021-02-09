@@ -36,6 +36,10 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         if self._printer.is_closed_or_error():
             return
 
+        # we currently don't do anything while already printing
+        if self._printer.is_printing():
+            return
+
         # require a minimum time between events
         if time.time() < self.nextEventCanHappenAt:
             return
