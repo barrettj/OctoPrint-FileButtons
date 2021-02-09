@@ -18,7 +18,24 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
     def button_callback(self, channel):
     	self._logger.info("FileButtons button callback channel {}".format(channel))
-    	self._printer.commands("M117 FileButtons - {0}".format(channel))
+    	# self._printer.commands("M117 FileButtons - {0}".format(channel))
+
+        if self._printer.is_closed_or_error():
+            return
+
+        if channel == 38:
+            # center
+            self._printer.commands("M117 Center Button")
+        elif channel == 40:
+            # left
+            self._printer.commands("M117 Left Button")
+        elif channel == 36:
+            # right
+            self._printer.commands("M117 Right Button")
+        else:
+            self._printer.commands("M117 Unknown Button")
+
+
 
 
     def setup_GPIO(self):
