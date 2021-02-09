@@ -64,7 +64,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
                         self.select_current_folder()
             
         elif channel == self.leftChannel:
-            if  GPIO.input(self.rightChannel) and hasJob:
+            if GPIO.input(self.rightChannel) and hasJob:
                 self.reset_folder_selection()
             else:
                 if hasJob:
