@@ -43,30 +43,36 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
             else:
                 self._printer.commands("M117 Center Button")
 
-            self.nextEventCanHappenAt = time.time() + 1.0
+            # all center button commands have a long debounce
+            self.set_next_event_timer_long()
 
         elif channel == self.leftChannel:
             if  GPIO.input(self.rightChannel):
                 self._printer.commands("M117 Left While Right")
-                self.nextEventCanHappenAt = time.time() + 1.0
+                self.set_next_event_timer_long()
 
             else:
                 self._printer.commands("M117 Left Button")
-                self.nextEventCanHappenAt = time.time() + 0.1
+                self.set_next_event_timer_short()
 
         elif channel == self.rightChannel:
             if GPIO.input(self.leftChannel):
                 self._printer.commands("M117 Right While Left")
-                self.nextEventCanHappenAt = time.time() + 1.0
+                self.set_next_event_timer_long()
 
             else:
                 self._printer.commands("M117 Right Button")
-                self.nextEventCanHappenAt = time.time() + 0.1
-
+                self.set_next_event_timer_short()
 
         else:
             self._printer.commands("M117 Unknown Button")
+            self.set_next_event_timer_short()
 
+    def set_next_event_timer_short(self):
+        self.nextEventCanHappenAt = time.time() + 0.1
+
+    def set_next_event_timer_long(self):
+        self.nextEventCanHappenAt = time.time() + 1.0
 
     def setup_GPIO(self):
         GPIO.setwarnings(False)
