@@ -264,14 +264,12 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         self.set_next_event_timer_short()
 
     def load_newest_file_of_folder(self, folder = "", origin = "local"):
-        jobData = self._printer.get_current_job()
-
         isSD = origin != "local"
         
         # get all the files and folders in the current folder
         currentFoldersFilesAndFolders = self._file_manager.list_files(path=folder, recursive=False)[origin]
 
-        newestFile = currentFoldersFilesAndFolders[0] # start with assuming the first file is the newest, it's probably not though
+        newestFile = currentFoldersFilesAndFolders.values()[0] # start with assuming the first file is the newest, it's probably not though
         for key, node in currentFoldersFilesAndFolders.items():
             if node["type"] != "folder" and node["date"] > newestFile["date"]:
                 newestFile = node
