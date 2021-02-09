@@ -87,6 +87,9 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
     def start_current_job(self):
         self._printer.commands("M117 Would Start Job")
+
+        #self._printer.start_print()
+        
         self.set_next_event_timer_long()
 
     def load_next_file_in_current_folder(self):
@@ -157,7 +160,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         # figure out the index of the next file (looping)
         currentIndexIntoSorted = sortedFiles.index(currentName)
         nextIndex = currentIndexIntoSorted - 1
-        if nextIndex == -1:
+        if currentIndexIntoSorted == 0:
             nextIndex = len(sortedFiles)
 
         # store the info for the next file
