@@ -62,9 +62,8 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
                         self.select_current_folder()
             
         elif channel == self.leftChannel:
-            if  GPIO.input(self.rightChannel):
-                self._printer.commands("M117 {} Left While Right".format(self.eventNumber))
-                self.set_next_event_timer_long()
+            if  GPIO.input(self.rightChannel) and hasJob:
+                self.reset_folder_selection()
             else:
                 if hasJob:
                     self.load_previous_file_in_current_folder()
@@ -72,10 +71,8 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
                     self.show_previous_folder_selection()
 
         elif channel == self.rightChannel:
-            if GPIO.input(self.leftChannel):
-                self._printer.commands("M117 {} Right While Left".format(self.eventNumber))
-                self.set_next_event_timer_long()
-
+            if GPIO.input(self.leftChannel) and hasJob:
+                self.reset_folder_selection()
             else:
                 if hasJob:
                     self.load_next_file_in_current_folder()
@@ -181,6 +178,11 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         self._printer.commands("M117 Select Folder")
         self.set_next_event_timer_short()
 
+    def reset_folder_selection(self):
+        self.currentFolderSelection = -2
+        self.display_select_folder_message()
+        self.set_next_event_timer_long()
+
     def show_next_folder_selection(self):
         self.currentFolderSelection = self.currentFolderSelection + 1
         if self.currentFolderSelection >= len(self.folder_list()):
@@ -195,10 +197,10 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
     def update_folder_selection_display(self):
         if self.currentFolderSelection == -1:
-            self._printer.commands("M117 Root Folder")
+            self._printer.commands("M117 {} - Root".format(self.currentFolderSelection))
         else:
             folder = self.folder_list()[self.currentFolderSelection]
-            self._printer.commands("M117 {}".format(folder))
+            self._printer.commands("M117 {} - {}".format(self.currentFolderSelection, folder))
         self.set_next_event_timer_short()
 
     def select_current_folder(self):
