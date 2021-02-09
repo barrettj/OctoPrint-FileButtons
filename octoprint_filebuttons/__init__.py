@@ -81,9 +81,9 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
     def setup_GPIO(self):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
-        self.setup_GPIO_pin(36)
-        self.setup_GPIO_pin(38)
-        self.setup_GPIO_pin(40)
+        self.setup_GPIO_pin(self.leftChannel)
+        self.setup_GPIO_pin(self.centerChannel)
+        self.setup_GPIO_pin(self.rightChannel)
         self._logger.info("FileButtons GPIO setup complete")
 
 
