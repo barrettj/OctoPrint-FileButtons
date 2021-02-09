@@ -56,9 +56,11 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
                 if hasJob:
                     self.start_current_job()
                 else:
+                    self._printer.commands("M117 center 1")
                     if self.currentFolderSelection == -2:
                         self.display_select_folder_message()
                     else:
+                        self._printer.commands("M117 center 2")
                         self.select_current_folder()
             
         elif channel == self.leftChannel:
@@ -197,10 +199,10 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
     def update_folder_selection_display(self):
         if self.currentFolderSelection == -1:
-            self._printer.commands("M117 {} - Root".format(self.currentFolderSelection))
+            self._printer.commands("M117 Root Folder")
         else:
             folder = self.folder_list()[self.currentFolderSelection]
-            self._printer.commands("M117 {} - {}".format(self.currentFolderSelection, folder))
+            self._printer.commands("M117 {}".format(folder))
         self.set_next_event_timer_short()
 
     def select_current_folder(self):
