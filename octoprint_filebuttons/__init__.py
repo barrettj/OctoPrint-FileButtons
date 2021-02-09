@@ -49,7 +49,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
         if channel == self.centerChannel:
             if GPIO.input(self.leftChannel):
-                self._printer.commands("M117 {} Center While Left".format(self.eventNumber))
+                self.load_newest_file_of_folder()
                 self.set_next_event_timer_long()
 
             elif GPIO.input(self.rightChannel):
@@ -260,6 +260,30 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
         # update the printer display to let us know it worked
         self._printer.commands("M117 Loaded {0}".format(nextASCIIName))
+
+        self.set_next_event_timer_short()
+
+    def load_newest_file_of_folder(self, folder = "", origin = "local"):
+        jobData = self._printer.get_current_job()
+
+        isSD = origin != "local"
+        
+        # get all the files and folders in the current folder
+        currentFoldersFilesAndFolders = self._file_manager.list_files(path=folder, recursive=False)[origin]
+
+        newestFile = currentFoldersFilesAndFolders[0] # start with assuming the first file is the newest, it's probably not though
+        for key, node in currentFoldersFilesAndFolders.items():
+            if node["type"] != "folder" and node["date"] > newestFile["date"]:
+                newestFile = node
+
+        newestASCIIName = newestFile["name"]
+        newestPath = newestFile["path"]
+
+        # select the file
+        self._printer.select_file(newestPath, isSD)
+
+        # update the printer display to let us know it worked
+        self._printer.commands("M117 Loaded {0}".format(newestASCIIName))
 
         self.set_next_event_timer_short()
 
