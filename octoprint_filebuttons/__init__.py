@@ -66,21 +66,21 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         else:
             self._printer.commands("M117 Unknown Button")
 
-   # def button_falling_callback(self, channel):
-   #      self._logger.info("FileButtons falling button callback channel {}".format(channel))
-   #      # self._printer.commands("M117 FileButtons - {0}".format(channel))
+   def button_falling_callback(self, channel):
+        self._logger.info("FileButtons falling button callback channel {}".format(channel))
+        # self._printer.commands("M117 FileButtons - {0}".format(channel))
 
-   #      if channel == self.centerChannel:
-   #          if self.centerPressed:
-   #              self.centerPressed = False
-   #      elif channel == self.leftChannel:
-   #          if self.leftPressed:
-   #              self.leftPressed = False
-   #      elif channel == self.rightChannel:
-   #          if self.rightPressed:
-   #              self.rightPressed = False
-   #      else:
-   #          self._printer.commands("M117 Unknown Button")
+        if channel == self.centerChannel:
+            if self.centerPressed:
+                self.centerPressed = False
+        elif channel == self.leftChannel:
+            if self.leftPressed:
+                self.leftPressed = False
+        elif channel == self.rightChannel:
+            if self.rightPressed:
+                self.rightPressed = False
+        else:
+            self._printer.commands("M117 Unknown Button")
 
 
     def setup_GPIO(self):
