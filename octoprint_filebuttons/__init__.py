@@ -4,6 +4,7 @@ from __future__ import absolute_import, unicode_literals
 import octoprint.plugin
 import RPi.GPIO as GPIO
 import os
+import time
 
 class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 					  octoprint.plugin.ShutdownPlugin,
@@ -13,6 +14,8 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         self.leftChannel = 40
         self.centerChannel = 38
         self.rightChannel = 36
+
+        self.nextEventCanHappenAt = time.time()
 
     def on_after_startup(self):
         self._logger.info("FileButtons %s on_after_startup!", self._plugin_version)
@@ -28,6 +31,10 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         if self._printer.is_closed_or_error():
             return
 
+        # require a minimum time between events
+        if time.time() < self.nextEventCanHappenAt:
+            return
+
         if channel == self.centerChannel:
             if GPIO.input(self.leftChannel):
                 self._printer.commands("M117 Center While Left")
@@ -35,16 +42,28 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
                 self._printer.commands("M117 Center While Right")
             else:
                 self._printer.commands("M117 Center Button")
+
+            self.nextEventCanHappenAt = time.time() + 1.0
+
         elif channel == self.leftChannel:
             if  GPIO.input(self.rightChannel):
                 self._printer.commands("M117 Left While Right")
+                self.nextEventCanHappenAt = time.time() + 1.0
+
             else:
                 self._printer.commands("M117 Left Button")
+                self.nextEventCanHappenAt = time.time() + 0.1
+
         elif channel == self.rightChannel:
             if GPIO.input(self.leftChannel):
                 self._printer.commands("M117 Right While Left")
+                self.nextEventCanHappenAt = time.time() + 1.0
+
             else:
                 self._printer.commands("M117 Right Button")
+                self.nextEventCanHappenAt = time.time() + 0.1
+
+
         else:
             self._printer.commands("M117 Unknown Button")
 
