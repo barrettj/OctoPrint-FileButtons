@@ -66,21 +66,21 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         else:
             self._printer.commands("M117 Unknown Button")
 
-   def button_falling_callback(self, channel):
-        self._logger.info("FileButtons falling button callback channel {}".format(channel))
-        # self._printer.commands("M117 FileButtons - {0}".format(channel))
+   # def button_falling_callback(self, channel):
+   #      self._logger.info("FileButtons falling button callback channel {}".format(channel))
+   #      # self._printer.commands("M117 FileButtons - {0}".format(channel))
 
-        if channel == self.centerChannel:
-            if self.centerPressed:
-                self.centerPressed = False
-        elif channel == self.leftChannel:
-            if self.leftPressed:
-                self.leftPressed = False
-        elif channel == self.rightChannel:
-            if self.rightPressed:
-                self.rightPressed = False
-        else:
-            self._printer.commands("M117 Unknown Button")
+   #      if channel == self.centerChannel:
+   #          if self.centerPressed:
+   #              self.centerPressed = False
+   #      elif channel == self.leftChannel:
+   #          if self.leftPressed:
+   #              self.leftPressed = False
+   #      elif channel == self.rightChannel:
+   #          if self.rightPressed:
+   #              self.rightPressed = False
+   #      else:
+   #          self._printer.commands("M117 Unknown Button")
 
 
     def setup_GPIO(self):
@@ -97,7 +97,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
             if channel != -1:
                 GPIO.setup(channel, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
                 GPIO.add_event_detect(channel, GPIO.RISING, callback=self.button_rising_callback, bouncetime = 250)
-                GPIO.add_event_detect(channel, GPIO.FALLING, callback=self.button_falling_callback, bouncetime = 250)
+                # GPIO.add_event_detect(channel, GPIO.FALLING, callback=self.button_falling_callback, bouncetime = 250)
                 self._logger.info("New Event Detect has been added to GPIO # %s", channel)
         except:
             self._logger.exception("Cannot setup GPIO ports %s, check to makes sure you don't have the same ports assigned to multiple actions", str(channel))
