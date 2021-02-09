@@ -19,6 +19,8 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
         self.eventNumber = 0
 
+        self.currentFolderSelection = -2
+
     def on_after_startup(self):
         self._logger.info("FileButtons %s on_after_startup!", self._plugin_version)
         self._logger.info(self._printer.get_state_id())
@@ -54,9 +56,10 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
                 if hasJob:
                     self.start_current_job()
                 else:
-                    self.load_first_file_of_folder()
-                    #self._printer.commands("M117 {} Center Button".format(self.eventNumber))
-                    #self.set_next_event_timer_long()
+                    if self.currentFolderSelection == -2:
+                        self.display_select_folder_message()
+                    else:
+                        self.select_current_folder()
             
         elif channel == self.leftChannel:
             if  GPIO.input(self.rightChannel):
@@ -66,8 +69,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
                 if hasJob:
                     self.load_previous_file_in_current_folder()
                 else:
-                    self._printer.commands("M117 {} Left Button".format(self.eventNumber))
-                    self.set_next_event_timer_short()
+                    self.show_previous_folder_selection()
 
         elif channel == self.rightChannel:
             if GPIO.input(self.leftChannel):
@@ -78,8 +80,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
                 if hasJob:
                     self.load_next_file_in_current_folder()
                 else:
-                    self._printer.commands("M117 {} Right Button".format(self.eventNumber))
-                    self.set_next_event_timer_short()
+                    self.show_next_folder_selection()
 
         else:
             self._printer.commands("M117 {} Unknown Button".format(self.eventNumber))
@@ -175,6 +176,52 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         self._printer.commands("M117 Loaded {0}".format(nextASCIIName))
 
         self.set_next_event_timer_short()
+
+    def display_select_folder_message(self):
+        self._printer.commands("M117 Select Folder")
+        self.set_next_event_timer_short()
+
+    def show_next_folder_selection(self):
+        self.currentFolderSelection = self.currentFolderSelection + 1
+        if self.currentFolderSelection == len(self.folder_list):
+            self.currentFolderSelection == -1
+        self.update_folder_selection_display()
+
+    def show_previous_folder_selection(self):
+        self.currentFolderSelection = self.currentFolderSelection - 1
+        if self.currentFolderSelection == -2:
+            self.currentFolderSelection == len(self.folder_list)
+        self.update_folder_selection_display()
+
+    def update_folder_selection_display(self):
+        if self.currentFolderSelection == -1:
+            self._printer.commands("M117 Root Folder")
+        else:
+            folder = self.folder_list()[self.currentFolderSelection]
+            self._printer.commands("M117 {}".format(folder))
+        self.set_next_event_timer_short()
+
+    def select_current_folder(self):
+        if self.currentFolderSelection == -1:
+            self._printer.commands("M117 *Root Folder")
+        else:
+            folder = self.folder_list()[self.currentFolderSelection]
+            self._printer.commands("M117 *{}".format(folder))
+        self.set_next_event_timer_short()
+
+    def folder_list(self):
+        foldersFilesAndFolders = self._file_manager.list_files(path="", recursive=False)["local"]
+
+        # filter the list to have just the folders
+        foldersOnly = {}
+        for key, node in foldersFilesAndFolders.items():
+            if node["type"] == "folder":
+                foldersOnly[key] = node
+
+        # sort the files in the desired manner
+        sortedFolders = sorted(foldersOnly.keys())
+
+        return sortedFolders
 
     def load_first_file_of_folder(self, folder = "", origin = "local"):
         jobData = self._printer.get_current_job()
