@@ -160,8 +160,8 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         # figure out the index of the next file (looping)
         currentIndexIntoSorted = sortedFiles.index(currentName)
         nextIndex = currentIndexIntoSorted - 1
-        if currentIndexIntoSorted == 0:
-            nextIndex = len(sortedFiles)
+        if nextIndex == -1:
+            nextIndex = len(sortedFiles) - 1
 
         # store the info for the next file
         nextFileInfo = filesOnly[sortedFiles[nextIndex]]
