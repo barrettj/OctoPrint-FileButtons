@@ -54,14 +54,14 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
                 if hasJob:
                     self.start_current_job()
                 else:
-                    self._printer.commands("M117 {} Center Button".format(self.eventNumber))
-                    self.set_next_event_timer_long()
+                    self.load_first_file_of_folder()
+                    #self._printer.commands("M117 {} Center Button".format(self.eventNumber))
+                    #self.set_next_event_timer_long()
             
         elif channel == self.leftChannel:
             if  GPIO.input(self.rightChannel):
                 self._printer.commands("M117 {} Left While Right".format(self.eventNumber))
                 self.set_next_event_timer_long()
-
             else:
                 if hasJob:
                     self.load_previous_file_in_current_folder()
@@ -176,6 +176,38 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
         self.set_next_event_timer_short()
 
+    def load_first_file_of_folder(self, folder = "", origin = "local"):
+        jobData = self._printer.get_current_job()
+
+        isSD = origin != "local"
+        
+        # get all the files and folders in the current folder
+        currentFoldersFilesAndFolders = self._file_manager.list_files(path=folder, recursive=False)[origin]
+
+        # filter the list to have just the files - can't use filter on list_files because it seems to always include folders
+        filesOnly = {}
+        for key, node in currentFoldersFilesAndFolders.items():
+            if node["type"] != "folder":
+                filesOnly[key] = node
+
+        # sort the files in the desired manner
+        sortedFiles = sorted(filesOnly.keys())
+
+        # figure out the index of the next file (looping)
+        nextIndex = 0
+
+        # store the info for the next file
+        nextFileInfo = filesOnly[sortedFiles[nextIndex]]
+        nextASCIIName = nextFileInfo["name"]
+        nextPath = nextFileInfo["path"]
+
+        # select the file
+        self._printer.select_file(nextPath, isSD)
+
+        # update the printer display to let us know it worked
+        self._printer.commands("M117 Loaded {0}".format(nextASCIIName))
+
+        self.set_next_event_timer_short()
 
     def set_next_event_timer_short(self):
         self.nextEventCanHappenAt = time.time() + 0.1
