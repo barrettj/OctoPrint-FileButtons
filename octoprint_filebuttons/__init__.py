@@ -247,7 +247,6 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         # sort the files in the desired manner
         sortedFiles = sorted(filesOnly.keys())
 
-        # figure out the index of the next file (looping)
         nextIndex = 0
 
         # store the info for the next file
