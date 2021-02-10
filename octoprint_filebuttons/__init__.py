@@ -97,9 +97,8 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
             self.set_next_event_timer_short()
 
     def start_current_job(self):
-        self._printer.commands("M117 Would Start Job")
-
-        #self._printer.start_print()
+        #self._printer.commands("M117 Would Start Job")
+        self._printer.start_print()
         
         self.set_next_event_timer_long()
 
