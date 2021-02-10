@@ -32,12 +32,9 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
     	self._logger.info("FileButtons button callback channel {}".format(channel))
     	# self._printer.commands("M117 FileButtons - {0}".format(channel))
 
-        # don't bother doing anything if not connected we can't really display to the printer which is our main feedback mechanism
+        # if we aren't connected try connected; our main communication mechanism is the printer display so we're DOA if we can't do that
         if self._printer.is_closed_or_error():
-            return
-
-        # we currently don't do anything while already printing
-        if self._printer.is_printing():
+            self._printer.connect()
             return
 
         # require a minimum time between events
