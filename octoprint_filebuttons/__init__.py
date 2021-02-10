@@ -76,6 +76,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
             
         elif channel == self.leftChannel:
             if GPIO.input(self.rightChannel) and hasJob:
+                # left and right while file loaded - unload and go to folder select
                 self.reset_folder_selection()
             else:
                 if hasJob:
@@ -85,6 +86,7 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
 
         elif channel == self.rightChannel:
             if GPIO.input(self.leftChannel) and hasJob:
+                # left and right while file loaded - unload and go to folder select
                 self.reset_folder_selection()
             else:
                 if hasJob:
