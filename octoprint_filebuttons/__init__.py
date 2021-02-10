@@ -44,8 +44,20 @@ class FileButtonsPlugin(octoprint.plugin.StartupPlugin,
         jobData = self._printer.get_current_job()
         hasJob = jobData["file"]["path"] != None
 
+        # if we're printing (only action is all three to cancel, otherwise bail)
+        if self._printer.is_printing():
+            if GPIO.input(self.leftChannel) and GPIO.input(self.centerChannel) and GPIO.input(self.rightChannel):
+                self._printer.commands("M117 Canceling Print")
+                self._printer.cancel_print()
+                self.set_next_event_timer_long()
+            
+            return
+
+        # if we aren't printing continue below
+
         if channel == self.centerChannel:
             if GPIO.input(self.leftChannel):
+                # center while holding left - load newest file
                 self.load_newest_file_of_folder()
                 self.set_next_event_timer_long()
 
